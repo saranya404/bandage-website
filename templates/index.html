@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Skill Badge Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Skill Badge Generator</h1>
+    <form action="/generate" method="post">
+        <input type="text" name="skills" placeholder="Python:Expert, HTML:Intermediate" required><br><br>
+
+        <!-- Shape -->
+        <label for="shape">Badge Shape:</label>
+        <select name="shape" id="shape">
+            <option value="rectangle">Rectangle</option>
+            <option value="rounded">Rounded Rectangle</option>
+            <option value="circle">Circle</option>
+        </select><br><br>
+
+        <!-- Color -->
+        <label for="color">Badge Color:</label>
+        <select name="color" id="color">
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="orange">Orange</option>
+            <option value="purple">Purple</option>
+        </select><br><br>
+
+        <!-- Size -->
+        <label for="size">Badge Size:</label>
+        <select name="size" id="size">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+        </select><br><br>
+
+        <button type="submit">Generate Badges</button>
+    </form>
+
+    <p>Welcome {{ session['user'] }} |
+<a href="/logout">Logout</a></p>
+
+
+    {% if badges %}
+    <h2>Your Badges</h2>
+    <div class="badge-container">
+        {% for badge in badges %}
+        <div class="badge">
+            <img src="{{ badge }}" alt="Skill Badge">
+            <a href="{{ badge }}" download>Download</a><br>
+            <input type="text" value="{{ request.url_root }}{{ badge }}" id="link{{ loop.index }}" readonly>
+            <button onclick="copyLink('link{{ loop.index }}')">Copy Link</button><br>
+            <a href="https://twitter.com/intent/tweet?text=Check out my skill badge!&url={{ request.url_root }}{{ badge }}" target="_blank">Share on Twitter</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+<script>
+function copyLink(id) {
+    var copyText = document.getElementById(id);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert("Link copied: " + copyText.value);
+}
+</script>
+</body>
+</html>
